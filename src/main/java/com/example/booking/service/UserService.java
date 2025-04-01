@@ -2,38 +2,44 @@ package com.example.booking.service;
 
 import com.example.booking.models.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.example.booking.repository.UserRepository;
 import com.example.booking.requests.LoginRequest;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
 public class UserService {
 
     @Autowired
-    UserRepository userRepository;
+    private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private AuthenticationManager authenticationManager;
 
     public User addUser(User user)
     {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         return userRepository.save(user);
     }
 
-    public Boolean loginUser(LoginRequest loginRequest)
+    public User loginUser(LoginRequest loginRequest)
     {
-        Optional<User> user = userRepository.findById(loginRequest.getUsername());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginRequest.getEmail(), loginRequest.getPassword()));
 
-        if(user == null)
-        {
-            return false;
-        }
+        return userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow();
+    }
 
-        User user1 = user.get();
-
-        if(!user1.getPassword().equals(loginRequest.getPassword()))
-        {
-            return false;
-        }
-        return true;
+    public List<User> getAllUsers()
+    {
+        return userRepository.findAll();
     }
 }

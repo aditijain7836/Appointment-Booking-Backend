@@ -1,4 +1,4 @@
-package com.example.booking.securityConfigs;
+package com.example.booking.configs;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

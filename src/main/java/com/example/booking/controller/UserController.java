@@ -1,40 +1,55 @@
 package com.example.booking.controller;
 
 import com.example.booking.models.User;
+import com.example.booking.response.LoginResponse;
+import com.example.booking.service.JWTService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.example.booking.requests.LoginRequest;
 import com.example.booking.service.UserService;
+
+import java.util.HashMap;
+import java.util.List;
 
 @RestController
 @CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
-    UserService userService;
+    private UserService userService;
 
-    @GetMapping("/login")
-    public String login()
+    @Autowired
+    private JWTService jwtService;
+
+    @PostMapping("/auth/signup")
+    public ResponseEntity<User> signupUser(@RequestBody User user)
     {
-        return "login page";
+        User signup_user = userService.addUser(user);
+
+        return ResponseEntity.ok(signup_user);
     }
 
-    @GetMapping("/home")
-    public String home()
+    @PostMapping("/auth/login")
+    public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest)
     {
-        return "home";
+        User user = userService.loginUser(loginRequest);
+
+        String jwtToken = jwtService.generateToken(new HashMap<>(), user);
+
+        LoginResponse loginResponse = new LoginResponse();
+
+        loginResponse.setToken(jwtToken);
+        loginResponse.setToknExpirationTime(jwtService.getJwtExpirationTime());
+
+        return ResponseEntity.ok(loginResponse);
     }
 
-    @PostMapping("/register")
-    public String register(@RequestBody User user)
+    @GetMapping("/getUsers")
+    public ResponseEntity<List<User>> getAllUsers()
     {
-        userService.addUser(user);
-        return "Success";
-    }
+        List<User> users = userService.getAllUsers();
 
-    @PostMapping("/loginUser")
-    public Boolean loginUser(@RequestBody LoginRequest loginRequest)
-    {
-        return userService.loginUser(loginRequest);
+        return ResponseEntity.ok(users);
     }
 }
