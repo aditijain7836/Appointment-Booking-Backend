@@ -59,4 +59,8 @@ public class SlotService {
     public List<Slot> getAllSlots() {
         return slotRepository.findByStatus("Available");
     }
+
+    public List<Booking> getUserBooking(String userName) {
+        return bookingRepository.findByUser_Name(userName);
+    }
 }

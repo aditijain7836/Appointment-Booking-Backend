@@ -2,6 +2,7 @@ package com.example.booking.controller;
 
 import com.example.booking.models.Booking;
 import com.example.booking.models.Slot;
+import com.example.booking.models.User;
 import com.example.booking.requests.SlotDto;
 import com.example.booking.service.SlotService;
 import jakarta.persistence.*;
@@ -34,6 +35,14 @@ public class SlotController {
     {
         List<Slot> slots = slotService.getAllSlots();
         return ResponseEntity.ok(slots);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000")
+    @GetMapping("/appointment")
+    public ResponseEntity<List<Booking>> getUserBooking(@RequestParam String userName)
+    {
+        List<Booking> bookings = slotService.getUserBooking(userName);
+        return ResponseEntity.ok(bookings);
     }
 
 }
