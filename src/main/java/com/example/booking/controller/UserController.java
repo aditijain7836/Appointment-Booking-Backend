@@ -13,7 +13,6 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://localhost:3000")
 public class UserController {
 
     @Autowired
@@ -22,6 +21,7 @@ public class UserController {
     @Autowired
     private JWTService jwtService;
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/auth/signup")
     public ResponseEntity<User> signupUser(@RequestBody User user)
     {
@@ -30,6 +30,7 @@ public class UserController {
         return ResponseEntity.ok(signup_user);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @PostMapping("/auth/login")
     public ResponseEntity<LoginResponse> loginUser(@RequestBody LoginRequest loginRequest)
     {
@@ -45,6 +46,7 @@ public class UserController {
         return ResponseEntity.ok(loginResponse);
     }
 
+    @CrossOrigin(origins = "http://localhost:3000")
     @GetMapping("/getUsers")
     public ResponseEntity<List<User>> getAllUsers()
     {
